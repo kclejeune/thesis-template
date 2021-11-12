@@ -1,0 +1,53 @@
+# Workflow for LaTeX compilation and release publication
+name: Build LaTeX and release
+
+# Controls when the action will run. Triggers the workflow on push of tags.
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - v* # Push events to matching v*, i.e. v1.0, v20.15.10
+
+# Create variable for the main .tex file to be compiled
+env:
+  TEX_FILE_NAME: thesis # CHANGE <main> TO THE NAME OF THE .tex FILE TO BE COMPILED (WITHOUT EXTENSION)
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build_release"
+  build_release:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      # Run the compilation action
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          # The root LaTeX file to be compiled
+          root_file: ${{env.TEX_FILE_NAME}}.tex
+      # Create a new release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      # Upload compiled PDF to the release
+      - name: Add compiled PDF to the release
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its outputs object, which include a `upload_url`.
+          asset_path: ./${{env.TEX_FILE_NAME}}.pdf
+          asset_name: ${{env.TEX_FILE_NAME}}.pdf
+          asset_content_type: application/pdf
