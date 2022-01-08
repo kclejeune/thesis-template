@@ -1,7 +1,3 @@
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
 \RequirePackage[final]{graphicx}
 \documentclass[final]{cwru}
 
@@ -14,27 +10,26 @@
 \usepackage{amsthm}
 \usepackage[toc,title]{appendix}
 \usepackage{bm}
-\usepackage[justification=centering]{caption}
-\usepackage{color}
+\usepackage{enumitem}
 \usepackage{dirtytalk}
 \usepackage{fancyhdr}
 \usepackage{geometry}
+\usepackage{microtype}
 \usepackage[acronym,shortcuts,nonumberlist]{glossaries}
 \usepackage{graphicx}
-\usepackage[all]{hypcap}
-\usepackage{hyperref}
-\usepackage[capitalize, noabbrev]{cleveref}
 \hypersetup{linktocpage,hidelinks,final,pdfborder=0 0 0,pdfview=FitH}
 \usepackage{ifdraft}
 \usepackage{lipsum}
 \usepackage[utf8]{inputenc}
 \usepackage{pdfpages}
 \usepackage{placeins}
-\usepackage{soul}
-\usepackage{subfigure}
+\usepackage[justification=centering]{caption}
+\usepackage{float}
+\usepackage{subcaption}
 \usepackage{textcomp}
 \usepackage{tikz}
-\usepackage{titling}
+\usepackage{hyperref}
+\usepackage[capitalize, noabbrev]{cleveref}
 % \usepackage{cite}
 \usepackage[
   backend=biber,
@@ -50,12 +45,31 @@
 \usepackage{xifthen}
 \graphicspath{{images/}, {assets/}, {figures/}}
 
+\usepackage{xspace}
+% Add a period to the end of an abbreviation unless there's one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+
+\def\eg{\emph{e.g}\onedot} \def\Eg{\emph{E.g}\onedot}
+\def\ie{\emph{i.e}\onedot} \def\Ie{\emph{I.e}\onedot}
+\def\cf{\emph{c.f}\onedot} \def\Cf{\emph{C.f}\onedot}
+\def\etc{\emph{etc}\onedot} \def\vs{\emph{vs}\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{\emph{et al}\onedot}
+\makeatother{}
+
 % previously LO,RE
 \fancyhead[LO]{} % remove section names from header
 
 % Pseudocode Definitions
 \algnewcommand\Input{\item[\textbf{Input:}]}
 \algnewcommand\Output{\item[\textbf{Output:}]}
+
+% argmin and argmax definitions
+\DeclareMathOperator*{\argmin}{\arg\min\ }   % rbp
+\DeclareMathOperator*{\argmax}{\arg\max\ }   % rbp
 
 % New column types for tables
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -116,7 +130,7 @@
 %% Setup new Title Command
 %% ========================
 
-\newcommand{\ThesisTitle}{what it's called}
+\newcommand{\ThesisTitle}{Dynamic Structure Adaptation for Communities of Learning Machines}
 
 %% ===============
 %% Glossary Setup
@@ -143,7 +157,7 @@
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
-\newtheorem{corrolary}{Corrolary}[section]
+\newtheorem{corollary}{Corollary}[section]
 \newtheorem{proposition}{Proposition}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \renewcommand\qedsymbol{\(\blacksquare\)}
@@ -164,19 +178,19 @@
 
 \title{\ThesisTitle}
 \author{Kennan LeJeune}
-\date{December, 2021}
-\newcommand{\graddate}{January, 2022}
+\newcommand{\graddate}{May, 2022}
+\date{\graddate}
 \degree{Master of Science}
 \doctype{thesis}
 \department{Computer and Data Sciences}
-\defensedate{TBD}
+\defensedate{January 12, 2022}
 
 \begin{document}
 
-\advisor{Dr.\ Advisor}
-\committee{Dr.\ Member}
-\committee{Dr.\ Member}
-\committee{Dr.\ Member}
+\advisor{Dr.\ Soumya Ray}
+\committee{Dr.\ Mehmet Koyuturk}
+\committee{Dr.\ Michael Lewicki}
+\committee{Dr.\ An Wang}
 
 
 \listoftodos{}
@@ -269,9 +283,12 @@ what it do
 
 \mainmatter{}
 
-\include{chapters/introduction.tex}
-\include{chapters/background.tex}
-\include{chapters/methods.tex}
+\input{chapters/introduction.tex}
+\input{chapters/background.tex}
+\input{chapters/related-work.tex}
+\input{chapters/methods.tex}
+\input{chapters/results.tex}
+\input{chapters/conclusions.tex}
 
 \backmatter{}
 \cleardoublepage{}
@@ -293,7 +310,4 @@ what it do
 
 \end{document}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
+
