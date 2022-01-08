@@ -7,6 +7,7 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
       - v* # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
 
 # Create variable for the main .tex file to be compiled
 env:
@@ -53,7 +54,7 @@ jobs:
           prerelease: false
       # Upload thesis PDF to the release
       - name: Add compiled PDF to the release
-        id: upload-release-asset
+        id: upload-thesis
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,7 +65,7 @@ jobs:
           asset_content_type: application/pdf
       # Upload presentation PDF to the release
       - name: Add compiled PDF to the release
-        id: upload-release-asset
+        id: upload-presentation
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,3 +74,4 @@ jobs:
           asset_path: ./${{env.PRESENTATION_FILE_NAME}}.pdf
           asset_name: ${{env.PRESENTATION_FILE_NAME}}.pdf
           asset_content_type: application/pdf
+
