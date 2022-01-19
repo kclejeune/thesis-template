@@ -1,16 +1,12 @@
 THESIS = thesis
-SLIDES = presentation
-AUX_FILES = **/*.acn **/*.acr **/*.alg **/*.aux **/*.bbl **/*.bcf **/*.blg **/*.dvi **/*.fdb_latexmk **/*.fls **/*.glg **/*.glo **/*.gls **/*.ist **/*.lof **/*.log **/*.out **/*.pdf **/*.run **/*.synctex **/*.toc
+AUX_FILES = **/*.aux **/*.acn **/*.acr **/*.alg **/*.aux **/*.bbl **/*.blg **/*.fdb_latexmk **/*.fls **/*.glg **/*.glo **/*.gls **/*.ist **/*.lof **/*.log **/*.lot **/*.out **/*.toc **/*.synctex.gz
 
-thesis: glossaries
-	latexmk -pdflatex=lualatex -pdf $(THESIS)
+build: glossaries 
+	latexmk -pdf $(THESIS)
 
-slides:
-	latexmk -pdflatex=lualatex -pdf $(SLIDES)
-
-glossaries:
-	latexmk -pdflatex=lualatex -pdf $(THESIS)
-	makeglossaries $(THESIS)
+glossaries: 
+	latexmk -pdf $(THESIS)
+	makeglossaries $(THESIS) 
 
 clean:
 	rm -f $(AUX_FILES)

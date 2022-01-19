@@ -7,12 +7,10 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
       - v* # Push events to matching v*, i.e. v1.0, v20.15.10
-  workflow_dispatch:
 
 # Create variable for the main .tex file to be compiled
 env:
-  THESIS_FILE_NAME: thesis # CHANGE <main> TO THE NAME OF THE .tex FILE TO BE COMPILED (WITHOUT EXTENSION)
-  PRESENTATION_FILE_NAME: presentation
+  TEX_FILE_NAME: thesis # CHANGE <main> TO THE NAME OF THE .tex FILE TO BE COMPILED (WITHOUT EXTENSION)
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,22 +23,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Set up Git repository
         uses: actions/checkout@v2
-        with:
-          lfs: true
       # Run the compilation action
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
           # The root LaTeX file to be compiled
-          root_file: ${{env.THESIS_FILE_NAME}}.tex
-          latexmk_use_lualatex: true
-      # Run the compilation action
-      - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@v2
-        with:
-          # The root LaTeX file to be compiled
-          root_file: ${{env.PRESENTATION_FILE_NAME}}.tex
-          latexmk_use_lualatex: true
+          root_file: ${{env.TEX_FILE_NAME}}.tex
       # Create a new release
       - name: Create Release
         id: create_release
@@ -52,26 +40,14 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-      # Upload thesis PDF to the release
+      # Upload compiled PDF to the release
       - name: Add compiled PDF to the release
-        id: upload-thesis
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its outputs object, which include a `upload_url`.
-          asset_path: ./${{env.THESIS_FILE_NAME}}.pdf
-          asset_name: ${{env.THESIS_FILE_NAME}}.pdf
+          asset_path: ./${{env.TEX_FILE_NAME}}.pdf
+          asset_name: ${{env.TEX_FILE_NAME}}.pdf
           asset_content_type: application/pdf
-      # Upload presentation PDF to the release
-      - name: Add compiled PDF to the release
-        id: upload-presentation
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing its outputs object, which include a `upload_url`.
-          asset_path: ./${{env.PRESENTATION_FILE_NAME}}.pdf
-          asset_name: ${{env.PRESENTATION_FILE_NAME}}.pdf
-          asset_content_type: application/pdf
-
